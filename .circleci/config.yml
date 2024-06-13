@@ -18,7 +18,8 @@ commands:
             chmod +x /tmp/shellspec_installer.sh
 
             # install options: https://github.com/shellspec/shellspec/blob/master/install.sh#L30
-            /tmp/shellspec_installer.sh -y
+            # Installing master: My bugfix from 2021 has not been released yet
+            /tmp/shellspec_installer.sh master -y
       - run:
           name: "Install kcov for measuring code coverage"
           command: |
