@@ -28,6 +28,13 @@ Describe "bashHelperMaven.sh"
   }
 
   Describe "showOnlyDownGradeLines"
+    Describe "wrong usage"
+      It "should print usage if not called in a pipe"
+        When I call showOnlyDownGradeLines
+        The status should be failure
+        The output should include "Usage"
+      End
+    End
     Describe "ignored content"
       It "should ignore unrelated output lines"
         When I call catUnrelatedAndCallShowOnlyDownGradeLines
