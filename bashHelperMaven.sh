@@ -4,6 +4,11 @@ set -euo pipefail
 IFS=$'\n\t'
 
 function showOnlyDownGradeLines() {
-    # TODO implement me
+
+    # consume stdin
+    while read -r line; do
+        # do nothing
+        true
+    done
     return 0
 }
