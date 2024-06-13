@@ -5,11 +5,41 @@ IFS=$'\n\t'
 
 function isDowngrade() {
     local versionFrom
-    versionFrom="$1"
     local versionTo
+
+    local majorFrom
+    local majorTo
+    local minorFrom
+    local minorTo
+    local patchFrom
+    local patchTo
+
+    versionFrom="$1"
     versionTo="$2"
 
-    # TODO compare versions
+    # not using sed, because it's not portable on macOS
+    majorFrom=$(echo "$versionFrom" | grep -Eo "^[0-9]+")
+    minorFrom=$(echo "$versionFrom" | grep -Eo "\.[0-9]+\." | grep -Eo "[0-9]+")
+    patchFrom=$(echo "$versionFrom" | grep -Eo "[0-9]+$")
+
+    majorTo=$(echo "$versionTo" | grep -Eo "^[0-9]+")
+    minorTo=$(echo "$versionTo" | grep -Eo "\.[0-9]+\." | grep -Eo "[0-9]+")
+    patchTo=$(echo "$versionTo" | grep -Eo "[0-9]+$")
+
+    if (( majorFrom > majorTo )); then
+        echo "YES"
+        return 0
+    elif (( majorFrom == majorTo )); then
+        if (( minorFrom > minorTo )); then
+            echo "YES"
+            return 0
+        elif (( minorFrom == minorTo )); then
+            if (( patchFrom > patchTo )); then
+                echo "YES"
+                return 0
+            fi
+        fi
+    fi
     echo "NO"
 }
 
