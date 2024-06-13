@@ -1,0 +1,58 @@
+version: 2.1
+
+references:
+  workspace_root: &workspace_root "/home/circleci/workspace"
+  shellspec_tests_config: &shellspec_tests_config
+      working_directory: *workspace_root
+      docker:
+        - image: cimg/base:2024.06
+
+commands:
+  install_shellspec:
+    description: Installs the Shellspec shell testing utility and a coverage tool
+    steps:
+      - run:
+          name: "Install shellspec"
+          command: |
+            curl -fsSL https://git.io/shellspec > /tmp/shellspec_installer.sh
+            chmod +x /tmp/shellspec_installer.sh
+
+            # install options: https://github.com/shellspec/shellspec/blob/master/install.sh#L30
+            /tmp/shellspec_installer.sh -y
+      - run:
+          name: "Install kcov for measuring code coverage"
+          command: |
+            sudo apt-get update
+            sudo apt-get install kcov
+
+  run_shellspec_tests:
+    description: Execute shellspec tests + store coverage results
+    parameters:
+      directory:
+        type: string
+    steps:
+      # doing a separate install - all the official images did not contain git, for some reason
+      # https://github.com/shellspec/shellspec/blob/master/docs/docker.md#official-docker-images
+      - install_shellspec
+      - checkout:
+          path: *workspace_root
+      - run:
+          command: |
+            cd "<< parameters.directory >>"
+            ./run_shellspec_tests.sh --kcov -f d
+      - store_artifacts:
+          path: "<< parameters.directory >>/coverage"
+
+jobs:
+  test_code:
+    <<: *shellspec_tests_config
+    steps:
+      - run_shellspec_tests:
+          directory: .
+
+workflows:
+  version: 2
+
+  full_workflow:
+    jobs:
+      - test_code
