@@ -1,0 +1,5 @@
+# IntelliJ IDEA IDE
+.idea
+
+# shellspec test coverage reports
+coverage
