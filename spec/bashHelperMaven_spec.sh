@@ -82,7 +82,7 @@ org.mockito:mockito-junit-jupiter 	 downgraded from 5.11.0 to 4.11.0"
         # be careful, we are matching for the tab character, don't have your editor change it to spaces!
         The output should equal "org.ow2.asm:asm 	 downgraded from 9.6 to 9.4
 org.example:example 	 downgraded from 1.2.3.5 to 1.2.3.4
-commons-logging:commons-logging 	 downgraded from 1.3 to 1.1.3"
+commons-logging:commons-logging 	 downgraded from 1.3.3 to 1.3"
       End
     End
     Describe "full example"
