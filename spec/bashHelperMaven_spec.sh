@@ -10,6 +10,10 @@ Describe "bashHelperMaven.sh"
     catAndCallShowOnlyDownGradeLines "downgrade"
     return $?
   }
+  catDowngradeNonSemVerAndCallShowOnlyDownGradeLines() {
+    catAndCallShowOnlyDownGradeLines "downgradeNonSemVer"
+    return $?
+  }
   catFullAndCallShowOnlyDownGradeLines() {
     catAndCallShowOnlyDownGradeLines "full"
     return $?
@@ -24,6 +28,10 @@ Describe "bashHelperMaven.sh"
   }
   catUpgradeAndCallShowOnlyDownGradeLines() {
     catAndCallShowOnlyDownGradeLines "upgrade"
+    return $?
+  }
+  catUpgradeNonSemVerAndCallShowOnlyDownGradeLines() {
+    catAndCallShowOnlyDownGradeLines "upgradeNonSemVer"
     return $?
   }
 
@@ -46,6 +54,11 @@ Describe "bashHelperMaven.sh"
         The status should be success
         The output should equal ""
       End
+      It "should ignore upgrade output lines for non-SemVer versions"
+        When I call catUpgradeNonSemVerAndCallShowOnlyDownGradeLines
+        The status should be success
+        The output should equal ""
+      End
       It "should ignore same-version output lines"
         When I call catSameVersionAndCallShowOnlyDownGradeLines
         The status should be success
@@ -61,6 +74,15 @@ Describe "bashHelperMaven.sh"
         The output should equal "net.bytebuddy:byte-buddy 	 downgraded from 1.14.16 to 1.14.12
 net.bytebuddy:byte-buddy-agent 	 downgraded from 1.14.12 to 1.13.16
 org.mockito:mockito-junit-jupiter 	 downgraded from 5.11.0 to 4.11.0"
+      End
+      It "should output downgrade output lines for non-SemVer versions"
+        When I call catDowngradeNonSemVerAndCallShowOnlyDownGradeLines
+        The status should be success
+        The output should not equal ""
+        # be careful, we are matching for the tab character, don't have your editor change it to spaces!
+        The output should equal "org.ow2.asm:asm 	 downgraded from 9.6 to 9.4
+org.example:example 	 downgraded from 1.2.3.5 to 1.2.3.4
+commons-logging:commons-logging 	 downgraded from 1.3 to 1.1.3"
       End
     End
     Describe "full example"

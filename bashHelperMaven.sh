@@ -6,37 +6,46 @@ function isDowngrade() {
     local versionFrom
     local versionTo
 
-    local majorFrom
-    local majorTo
-    local minorFrom
-    local minorTo
-    local patchFrom
-    local patchTo
+    local part1From
+    local part2From
+    local part3From
+    local part4From
+    local part1To
+    local part2To
+    local part3To
+    local part4To
 
     versionFrom="$1"
     versionTo="$2"
 
     # Not using sed, because it's not portable on macOS.
     # Unfortunately, this makes everything a bit slow. Then again, you won't run it a lot, most likely.
-    majorFrom=$(echo "$versionFrom" | grep -Eo "^[0-9]+")
-    minorFrom=$(echo "$versionFrom" | grep -Eo "\.[0-9]+\." | grep -Eo "[0-9]+")
-    patchFrom=$(echo "$versionFrom" | grep -Eo "[0-9]+$")
+    part1From=$(echo "$versionFrom" | grep -Eo "^[0-9]+")
+    part2From=$(echo "$versionFrom" | grep -Eo "^[0-9]+\.[0-9]+" | grep -Eo "[0-9]+$")
+    part3From=$(echo "$versionFrom" | grep -Eo "^[0-9]+\.[0-9]+\.[0-9]+" | grep -Eo "[0-9]+$")
+    part4From=$(echo "$versionFrom" | grep -Eo "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" | grep -Eo "[0-9]+$")
 
-    majorTo=$(echo "$versionTo" | grep -Eo "^[0-9]+")
-    minorTo=$(echo "$versionTo" | grep -Eo "\.[0-9]+\." | grep -Eo "[0-9]+")
-    patchTo=$(echo "$versionTo" | grep -Eo "[0-9]+$")
+    part1To=$(echo "$versionTo" | grep -Eo "^[0-9]+")
+    part2To=$(echo "$versionTo" | grep -Eo "^[0-9]+\.[0-9]+" | grep -Eo "[0-9]+$")
+    part3To=$(echo "$versionTo" | grep -Eo "^[0-9]+\.[0-9]+\.[0-9]+" | grep -Eo "[0-9]+$")
+    part4To=$(echo "$versionTo" | grep -Eo "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" | grep -Eo "[0-9]+$")
 
-    if (( majorFrom > majorTo )); then
+    if (( part1From > part1To )); then
         echo "YES"
         return 0
-    elif (( majorFrom == majorTo )); then
-        if (( minorFrom > minorTo )); then
+    elif (( part1From == part1To )); then
+        if (( part2From > part2To )); then
             echo "YES"
             return 0
-        elif (( minorFrom == minorTo )); then
-            if (( patchFrom > patchTo )); then
+        elif (( part2From == part2To )); then
+            if (( part3From > part3To )); then
                 echo "YES"
                 return 0
+            elif (( part3From == part3To )); then
+                if (( part4From > part4To )); then
+                    echo "YES"
+                    return 0
+                fi
             fi
         fi
     fi
@@ -61,8 +70,8 @@ function printOutputIfDowngradeLine() {
     # Not using sed, because it's not portable on macOS.
     # Unfortunately, this makes everything a bit slow. Then again, you won't run it a lot, most likely.
     library=$(echo "$line" | grep -Eo "+- \(?[a-z0-9.-]*:[a-z0-9.-]*:jar" | grep -Eo "[a-z0-9.-]+:[a-z0-9.-]+")
-    versionFrom=$(echo "$line" | grep -Eo "version managed from [0-9]+\.[0-9]+\.[0-9]+[;)]" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
-    versionTo=$(echo "$line" | grep -Eo ":jar:[0-9]+\.[0-9]+\.[0-9]+:(compile|test)" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
+    versionFrom=$(echo "$line" | grep -Eo "version managed from [0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?[;)]" | grep -Eo "[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?")
+    versionTo=$(echo "$line" | grep -Eo ":jar:[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?:(compile|test|runtime)" | grep -Eo "[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?")
 
     if [ $(isDowngrade "$versionFrom" "$versionTo") == "YES" ]; then
         echo -e "$library \t downgraded from $versionFrom to $versionTo"
