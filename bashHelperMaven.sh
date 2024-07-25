@@ -55,7 +55,7 @@ function printOutputIfDowngradeLine() {
 
     # seems like a good shortcut, and would certainly improve performance - but it seems like I would miss some downgrades with this in place
 #     if [ -n $( echo "$line" | grep "omitted for duplicate" ) ]; then
-#       return 0
+#         return 0
 #     fi
 
     # Not using sed, because it's not portable on macOS.
@@ -65,7 +65,7 @@ function printOutputIfDowngradeLine() {
     versionTo=$(echo "$line" | grep -Eo ":jar:[0-9]+\.[0-9]+\.[0-9]+:(compile|test)" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
 
     if [ $(isDowngrade "$versionFrom" "$versionTo") == "YES" ]; then
-      echo -e "$library \t downgraded from $versionFrom to $versionTo"
+        echo -e "$library \t downgraded from $versionFrom to $versionTo"
     fi
 }
 
