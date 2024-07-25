@@ -16,7 +16,8 @@ function isDowngrade() {
     versionFrom="$1"
     versionTo="$2"
 
-    # not using sed, because it's not portable on macOS
+    # Not using sed, because it's not portable on macOS.
+    # Unfortunately, this makes everything a bit slow. Then again, you won't run it a lot, most likely.
     majorFrom=$(echo "$versionFrom" | grep -Eo "^[0-9]+")
     minorFrom=$(echo "$versionFrom" | grep -Eo "\.[0-9]+\." | grep -Eo "[0-9]+")
     patchFrom=$(echo "$versionFrom" | grep -Eo "[0-9]+$")
@@ -52,7 +53,13 @@ function printOutputIfDowngradeLine() {
     # [INFO]    |  +- (net.bytebuddy:byte-buddy:jar:1.14.12:test - version managed from 1.14.16; omitted for duplicate)
     # [INFO]    |  +- net.bytebuddy:byte-buddy-agent:jar:1.13.16:test (version managed from 1.14.12)
 
-    # not using sed, because it's not portable on macOS
+    # seems like a good shortcut, and would certainly improve performance - but it seems like I would miss some downgrades with this in place
+#     if [ -n $( echo "$line" | grep "omitted for duplicate" ) ]; then
+#       return 0
+#     fi
+
+    # Not using sed, because it's not portable on macOS.
+    # Unfortunately, this makes everything a bit slow. Then again, you won't run it a lot, most likely.
     library=$(echo "$line" | grep -Eo "+- \(?[a-z0-9.-]*:[a-z0-9.-]*:jar" | grep -Eo "[a-z0-9.-]+:[a-z0-9.-]+")
     versionFrom=$(echo "$line" | grep -Eo "version managed from [0-9]+\.[0-9]+\.[0-9]+[;)]" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
     versionTo=$(echo "$line" | grep -Eo ":jar:[0-9]+\.[0-9]+\.[0-9]+:(compile|test)" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
