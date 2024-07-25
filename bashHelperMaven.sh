@@ -59,7 +59,7 @@ function printOutputIfDowngradeLine() {
     versionTo=$(echo "$line" | grep -Eo ":jar:[0-9]+\.[0-9]+\.[0-9]+:(compile|test)" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+")
 
     if [ $(isDowngrade "$versionFrom" "$versionTo") == "YES" ]; then
-      echo "$library \t downgraded from $versionFrom to $versionTo"
+      echo -e "$library \t downgraded from $versionFrom to $versionTo"
     fi
 }
 

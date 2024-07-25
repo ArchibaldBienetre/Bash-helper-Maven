@@ -57,18 +57,20 @@ Describe "bashHelperMaven.sh"
         When I call catDowngradeAndCallShowOnlyDownGradeLines
         The status should be success
         The output should not equal ""
-        The output should equal "net.bytebuddy:byte-buddy \t downgraded from 1.14.16 to 1.14.12
-net.bytebuddy:byte-buddy-agent \t downgraded from 1.14.12 to 1.13.16
-org.mockito:mockito-junit-jupiter \t downgraded from 5.11.0 to 4.11.0"
+        # be careful, we are matching for the tab character, don't have your editor change it to spaces!
+        The output should equal "net.bytebuddy:byte-buddy 	 downgraded from 1.14.16 to 1.14.12
+net.bytebuddy:byte-buddy-agent 	 downgraded from 1.14.12 to 1.13.16
+org.mockito:mockito-junit-jupiter 	 downgraded from 5.11.0 to 4.11.0"
       End
     End
     Describe "full example"
       It "should output downgrade output lines"
         When I call catFullAndCallShowOnlyDownGradeLines
         The status should be success
-        The output should equal "net.bytebuddy:byte-buddy \t downgraded from 1.14.16 to 1.14.12
-net.bytebuddy:byte-buddy-agent \t downgraded from 1.14.12 to 1.13.16
-org.mockito:mockito-junit-jupiter \t downgraded from 5.11.0 to 4.11.0"
+        # be careful, we are matching for the tab character, don't have your editor change it to spaces!
+        The output should equal "net.bytebuddy:byte-buddy 	 downgraded from 1.14.16 to 1.14.12
+net.bytebuddy:byte-buddy-agent 	 downgraded from 1.14.12 to 1.13.16
+org.mockito:mockito-junit-jupiter 	 downgraded from 5.11.0 to 4.11.0"
       End
     End
   End
