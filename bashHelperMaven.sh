@@ -69,7 +69,7 @@ function printOutputIfDowngradeLine() {
 
     # Not using sed, because it's not portable on macOS.
     # Unfortunately, this makes everything a bit slow. Then again, you won't run it a lot, most likely.
-    library=$(echo "$line" | grep -Eo "+- \(?[a-z0-9.-]*:[a-z0-9.-]*:jar" | grep -Eo "[a-z0-9.-]+:[a-z0-9.-]+")
+    library=$(echo "$line" | grep -Eo "\+- \(?[a-z0-9.-]*:[a-z0-9.-]*:jar" | grep -Eo "[a-z0-9.-]+:[a-z0-9.-]+")
     versionFrom=$(echo "$line" | grep -Eo "version managed from [0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?[;)]" | grep -Eo "[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?")
     versionTo=$(echo "$line" | grep -Eo ":jar:[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?:(compile|test|runtime)" | grep -Eo "[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?")
 
